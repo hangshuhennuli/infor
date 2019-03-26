@@ -56,3 +56,6 @@ class Comment(BaseModel,db.Model):
 
 # 7.更新数据库
 # python manage.py db upgrade
+
+
+航
