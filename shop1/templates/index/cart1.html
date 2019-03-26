@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<script type="text/javascript" src="../../static/js/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+    <table border="5" align="center">
+		<tr>
+			<td>选择删除</td>
+			<td>商品ID</td>
+			<td>商品价格</td>
+			<td>商品名称</td>
+			<td>购买数量</td>
+			<td>小计</td>		
+        </tr>
+        {% for i in cart %}
+		<tr>
+			<td><input type="checkbox" value="{{i.id}}" class="c" name="c"/></td>
+			<td>{{i.good_id}}</td>
+			<td>{{i.price}}</td>
+			<td>{{i.name}}</td>
+			<td>
+				<a href="javascript:buy({{i.id}},1,{{i.price}})">+</a>
+				<input class="number{{i.id}}" value="{{i.number}}" readonly>
+				<a href="javascript:buy({{i.id}},0,{{i.price}})">-</a>
+			</td>
+			<td><span class="ltotal{{i.id}}">{{i.number*i.price}}</span></td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td>
+					<a href="javascript:dele()">删除</a></td>
+				</td>
+				<td colspan="5" align="center">总计：<span class="total">{{sum}}</span></td>
+		</tr>
+		<tr>
+			<td colspan="6" align="center"><a href="/">返回首页</a></td>
+		</tr>
+	</table>
+</body>
+	<script>
+		function dele(){
+			var dele = $(".c:checked")
+			var clist = []
+			$.each(dele,function(){
+			clist.push($(this).val())
+			})
+			console.log(clist)
+			$.ajax({
+				url:'dele',
+				type:'post',
+				data:{'clist':clist.join(',')},
+				dataType:"json",
+				success:function(res){
+					if(res.code == 200){
+						alert(res.mes)
+						window.location.reload();
+            }
+        }
+    })
+}
+		function buy(id,type,price){
+			var number = $('.number'+id).val()
+			var now_number = 0
+			var ltotal = 0
+			var total = $('.total').html()
+			if(type == 1){
+				now_number = parseInt(number)+1
+				ltotal = now_number*price
+				$('.number'+id).val(now_number)
+				$(".ltotal"+id).html(ltotal)
+				$(".total").html(parseFloat(total)+price)
+
+			}else{
+				now_number = parseInt(number)-1
+				ltotal = now_number*price
+				$('.number'+id).val(now_number)
+				$(".ltotal"+id).html(ltotal)
+				$(".total").html(parseFloat(total)-price)
+			}
+
+		}
+	</script>
+</html>

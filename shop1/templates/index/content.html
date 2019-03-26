@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="../../static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../static/js/detail.js"></script>
+    <title>商品详情页</title>
+</head>
+<body>
+
+    {% for message in get_flashed_messages() %}
+    {{message}}
+    {% endfor %}
+
+
+    {% for i in data.goods %}
+    <tr>
+        <td><img src={{i.image_url}} width=200px></td><br/>
+        <td>名称：{{i.name}}</td><br/>
+        <td>价格：￥{{i.price}}</td><br/>
+        <td>数量：{{i.number}}</td><br/>
+        <td>描述：{{i.descrip}}</td><br/>
+        <td>详情：{{ i.content}}</td><br/>
+        <td>
+            <button><a href="javascript:buy({{i.id}})">加入购物车</a></button> 
+        {% endfor %}   
+        </td><br>
+        <div><a href="/cart">购物车</a></div><br/>
+
+        <textarea placeholder="请发表您的评论" class="content" onclick="javascript:islogin({{data.user_id}})"></textarea>
+        <button type="button" onclick="javascript:comm({{data.goods[0].id}})">评论</button>
+        <h3>评论展示区：</h3>
+        <div id="comment">
+        {% for i in data.comments %}
+        <li>{{ i.user.name}}&nbsp;&nbsp;&nbsp;{{i.content}}&nbsp;&nbsp;&nbsp;{{i.create_time}}</li><br/>
+        {% endfor %}
+        </div>
+</body>
+<script>
+        function buy(id){
+            $.ajax({
+                url:'/buy',
+                type:'post',
+                dataType:'json',
+                data:{'id':id},
+                success:function(res){
+                    console.log(res)
+                    if(res.code == 200){
+                        alert(res.message)
+                    }else{
+                        alert(res.message)
+                        window.location.href='/login'
+                    }
+                }
+            })
+        }
+        function comm(good_id){
+            var content = $('.content').val()
+            $.ajax({
+                url:'/comm',
+                type:'post',
+                dataType:'json',
+                data:{'content':content,'good_id':good_id},
+                success:function(res){
+                    console.log(res)
+                    if(res.code == 200){
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+        function islogin(uid){
+            if (uid == 0){
+                window.location.href="/login"
+            }
+        }
+  
+    </script>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../static/css/jquery.pagination.css">
+    <script type="text/javascript" src="../../static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.pagination.min.js"></script>
+
+    <title>产品首页</title>
+</head>
+<body>
+        <a><font color='green'>新鲜水果&nbsp;&nbsp;&nbsp;&nbsp;|</font></a>
+    {% for i in cate %}
+    <a href="/goodlist?id={{i.id}}">{{ i.name }}</a>
+    {% endfor %}
+    <form class="news_filter_form">
+            <input type="text" placeholder="请输入关键字" class="input_txt" name="keyword" value="{{data.keyword}}">
+            <input type="submit" value="搜 索" class="input_sub">
+        </form>
+
+
+<table>
+        {% for i in data.good %}
+        <table>
+            <tr>
+                <td>
+                    <a href='/content?id={{i.id}}'><img src="{{i.image_url}}" width=150px></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <em>￥</em>
+                    <i>{{i.price}}</i>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href='/content?id={{i.id}}'>{{i.name}}</a>
+                </td>
+            </tr>
+        </table>
+        {% endfor %}
+</table>
+<div id="pagination" class="page"></div>
+</div>
+
+<script>
+    $(function() {
+        $("#pagination").pagination({
+            currentPage: {{data.current_page}},
+            totalPage: {{data.total_page}},
+            callback: function(current) {
+                // alert(current)
+                var keyword = $(".input_txt").val()
+                window.location.href="/?p="+current+"&keyword="+keyword
+            }
+        });
+    });
+</script>
+</body>
+</html>
